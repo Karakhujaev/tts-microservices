@@ -137,6 +137,7 @@ Response:
 ```
 
 
+
 ```mermaid
 graph TD;
     Client -->|API Request| NGINX["NGINX API Gateway (80)"]
@@ -145,5 +146,5 @@ graph TD;
     TextService -->|Stores text| PostgreSQL["PostgreSQL DB (5432)"]
     TextService -->|Forwards text| SpeechService
     SpeechService -->|Converts text to audio| Storage["Audio Storage"]
-    Client -->|GET /api/speech/{id}| NGINX -->|Fetch Audio| Storage
+    NGINX -->|GET /api/speech/{id}| Storage
 ```
