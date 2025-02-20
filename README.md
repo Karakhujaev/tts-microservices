@@ -135,3 +135,15 @@ Response:
   "status": "completed"
 }
 ```
+
+
+```mermaid
+graph TD;
+    Client -->|API Request| NGINX["NGINX API Gateway (80)"]
+    NGINX -->|POST /api/text| TextService["Text Service (8080)"]
+    NGINX -->|POST /process| SpeechService["Speech Service (8081)"]
+    TextService -->|Stores text| PostgreSQL["PostgreSQL DB (5432)"]
+    TextService -->|Forwards text| SpeechService
+    SpeechService -->|Converts text to audio| Storage["Audio Storage"]
+    Client -->|GET /api/speech/{id}| NGINX -->|Fetch Audio| Storage
+```
