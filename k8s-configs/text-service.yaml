@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: text-service
+  namespace: tts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: text-service
+  template:
+    metadata:
+      labels:
+        app: text-service
+    spec:
+      containers:
+        - name: text-service
+          image: your-docker-hub/text-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              value: "postgres://user:password@postgres:5432/textdb"
+            - name: SPEECH_SERVICE_URL
+              value: "http://speech-service:8081"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: text-service
+  namespace: tts
+spec:
+  selector:
+    app: text-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

@@ -1,0 +1,6 @@
+**/bin/
+**/vendor/
+**/go.sum
+**/go.mod
+
+pgdata/

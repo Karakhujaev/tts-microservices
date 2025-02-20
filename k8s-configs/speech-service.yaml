@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speech-service
+  namespace: tts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: speech-service
+  template:
+    metadata:
+      labels:
+        app: speech-service
+    spec:
+      containers:
+        - name: speech-service
+          image: your-docker-hub/speech-service:latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: AUDIO_STORAGE_PATH
+              value: "/audio"
+          volumeMounts:
+            - mountPath: /audio
+              name: audio-storage
+      volumes:
+        - name: audio-storage
+          persistentVolumeClaim:
+            claimName: audio-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speech-service
+  namespace: tts
+spec:
+  selector:
+    app: speech-service
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081

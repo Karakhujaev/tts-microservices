@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  text-service:
+    build: ./text-service
+    container_name: text-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/textdb
+      - SPEECH_SERVICE_URL=http://speech-service:8081
+    networks:
+      - tts-network
+
+  speech-service:
+    build: ./speech-service
+    container_name: speech-service
+    ports:
+      - "8081:8081"
+    networks:
+      - tts-network
+
+  db:
+    image: postgres:latest
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: textdb
+    ports:
+      - "5432:5432"
+    networks:
+      - tts-network
+
+networks:
+  tts-network:
+    driver: bridge
